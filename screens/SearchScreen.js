@@ -2,22 +2,49 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, TouchableOpacity, TextInput, ScrollView } from 'react-native';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function SearchScreen() {
+
+export default function App() {
   const [text,setText]=useState("");
   const onChangeText = (event) => setText(event);
 
   const [search,setSearch] = useState({});
-  const addSearchText = () => {
+
+  const STORAGE_KEY = "@search";
+
+  const saveSearchText = async (toSave) => {
+    const s = JSON.stringify(toSave);
+    await AsyncStorage.setItem(STORAGE_KEY,s);
+  }
+
+  const loadSearchText = async() => {
+    const s = await AsyncStorage.getItem(STORAGE_KEY);
+    if (s !== null) {
+      setSearch(JSON.parse(s));
+    } else {
+      setSearch({}); // null일 경우 기본적으로 빈 객체를 설정
+    }
+  }
+
+  useEffect(()=>{
+    loadSearchText();
+  },[]);
+ 
+  const addSearchText = async() => {
     if(text===""){
       return;
     }
     const newSearchText = Object.assign({}, search, {[Date.now()]: {text}});
     setSearch(newSearchText);
     setText("");
+    await saveSearchText(newSearchText);
   }
   
+  //const deleteSearchText = (key) => {
+    //
+  //}
 
   return (
     <View style={styles.container}>
@@ -129,7 +156,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     paddingHorizontal:20,
-    backgroundColor:"#DCDBD9"
+    backgroundColor:"#EEECEC"
   },
   container1:{
     marginTop:50
