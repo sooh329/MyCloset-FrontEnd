@@ -1,19 +1,20 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView, SafeAreaView } from 'react-native';
-import {WithLocalSvg} from 'react-native-svg/css';
-import * as Font from "expo-font";
-import MyPage from '../assets/MyPage.svg';
+import { WithLocalSvg } from 'react-native-svg/css';
+import * as Font from "expo-font";;
 import SearchIcon from '../assets/SearchIcon.svg';
-import MyClosetLogo from '../assets/MyClosetLogo.svg';
 import PlusCloset from '../assets/PlusCloset.svg';
 import MinusCloset from '../assets/MinusCloset.svg';
-import { useNavigation } from '@react-navigation/native';
+import Toast from 'react-native-root-toast';
+import { useNavigation, useRoute } from '@react-navigation/native';
 
-const MainScreen = () => {
+const SearchResultScreen = () => {
+  const navigation = useNavigation();
+  const route = useRoute();
 
-  const navigation = useNavigation(); 
+  // 전달받은 검색어를 설정
+  const searchWord = route.params?.searchWord || '상의';
 
-  //상품 목록 추후 백에서 get
   const [goods, setGoods] = useState([
     { name: '여성 스커트 1', tags: '하의', image: require('../assets/favicon.png'), shop: 'ABLY', price: '35000', isCloset: false },
     { name: '여성 셔츠 1', tags: '상의', image: require('../assets/dddfffsfiojdsiofjdis.png'), shop: 'ZIGZAG', price: '35000', isCloset: false },
@@ -24,6 +25,8 @@ const MainScreen = () => {
     { name: '여성 바지 2', tags: '하의', image: require('../assets/favicon.png'), shop: 'SHEIN', price: '35000', isCloset: false },
     { name: '여성 바지 3', tags: '하의', image: require('../assets/favicon.png'), shop: 'SHEIN', price: '35000', isCloset: false },
   ]);
+
+  const [filteredGoods, setFilteredGoods] = useState([]);
 
   const [fontsLoaded, setFontsLoaded] = useState(false);
 
@@ -45,14 +48,37 @@ const MainScreen = () => {
     loadFonts();
   }, []);
 
+  useEffect(() => {
+    if (searchWord) {
+      const filtered = goods.filter(item =>
+        item.name.includes(searchWord) ||
+        item.tags.includes(searchWord) ||
+        item.shop.includes(searchWord)
+      );
+      setFilteredGoods(filtered);
+    } else {
+      setFilteredGoods(goods);
+    }
+  }, [searchWord, goods]);
+
   if (!fontsLoaded) {
     return null;
   }
 
   const handleCloset = (index) => {
-    setGoods((prevGoods) => {
+    setFilteredGoods((prevGoods) => {
       const newGoods = [...prevGoods];
       newGoods[index].isCloset = !newGoods[index].isCloset; // isCloset 상태 반전
+
+      const message = isCloset ? '클로젯에 담겼습니다.' : '클로젯에서 삭제되었습니다.';
+      Toast.show(message, {
+        duration: Toast.durations.SHORT,
+        position: Toast.positions.BOTTOM,
+        shadow: true,
+        animation: true,
+        hideOnPress: true,
+      });
+
       return newGoods;
     });
   };
@@ -64,28 +90,21 @@ const MainScreen = () => {
           <View style={styles.search}>
             <WithLocalSvg asset={SearchIcon} width={20} height={20} style={{ paddingHorizontal: 25 }} />
             <TouchableOpacity onPress={() => navigation.navigate('SearchScreen')}>
-              <Text>나의 옷장 아이템 검색하기</Text>
+              <Text>{searchWord}</Text>
             </TouchableOpacity>
           </View>
-          <TouchableOpacity onPress={() => navigation.navigate('Search', { screen: 'SearchResultScreen' })}>
-            <WithLocalSvg asset={MyPage} width={40} height={40} />
-          </TouchableOpacity>
         </View>
 
         <ScrollView contentContainerStyle={{ paddingBottom: 100 }} showsVerticalScrollIndicator={false}>
-          <View style={[styles.mainText]}>
-            <WithLocalSvg asset={MyClosetLogo} style={styles.mainMycloset}/>
-            <Text style={styles.mainSmallText}>회원님을 위한</Text>
-            <Text style={styles.mainSmallText}>추천 아이템입니다</Text>
-          </View>
+          <Text style={{ marginBottom: 10 }}>'{searchWord}'에 대한 검색 결과입니다.</Text>
           <View style={styles.line} />
 
           <View style={styles.goodsContainer}>
-            {goods.map((item, index) => (
-              <View key={index} style={styles.item} onPress={() => handleImagePress(item)}>
+            {filteredGoods.map((item, index) => (
+              <View key={index} style={styles.item}>
                 <Image source={item.image} style={styles.image} />
-                <View style={{width: '90%'}}>
-                  <View style={{flexDirection:'row', width: '100%', justifyContent:'space-between', marginTop: 3}}>
+                <View style={{ width: '90%' }}>
+                  <View style={{ flexDirection: 'row', width: '100%', justifyContent: 'space-between', marginTop: 3 }}>
                     <Text style={styles.itemPrice}>{item.price}원</Text>
                     <Text style={styles.itemShop}>{item.shop}</Text>
                   </View>
@@ -101,10 +120,8 @@ const MainScreen = () => {
               </View>
             ))}
           </View>
-          
         </ScrollView>
       </View>
-
     </SafeAreaView>
   );
 };
@@ -121,7 +138,6 @@ const styles = StyleSheet.create({
   },
   search: {
     flex: 1,
-    marginRight: 10,
     flexDirection: 'row',
     borderWidth: 1.5,
     borderColor: '#737070',
@@ -130,26 +146,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'white',
   },
-  
-  mainText: {
-    alignItems: 'center',
-    marginVertical: 20,
-  },
-  mainMycloset: {
-    marginBottom: 30,
-  },
-  mainSmallText: {
-    fontFamily: 'GothicA1-L',
-    fontSize: 16,
-  },
-
   line: {
     height: 0.5,
     backgroundColor: 'black',
-    flex : 1,
+    flex: 1,
     marginBottom: 20,
   },
-
   goodsContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
@@ -159,11 +161,11 @@ const styles = StyleSheet.create({
     width: '45%',
     marginBottom: 30,
     position: 'relative',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   image: {
-    flex: 1, // 이미지를 부모 뷰의 크기에 맞춤
-    width: '100%', // 부모의 너비를 따라가도록 설정
+    flex: 1,
+    width: '100%',
     height: 150,
     borderRadius: 15,
     borderWidth: 0.5,
@@ -181,7 +183,7 @@ const styles = StyleSheet.create({
     width: '90%',
   },
   button: {
-    position: 'absolute', // 절대 위치
+    position: 'absolute',
     bottom: 50,
     right: 10,
     padding: 7,
@@ -190,6 +192,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(34, 77, 96, 0.7)',
     borderRadius: 10,
   },
-})
+});
 
-export default MainScreen;
+export default SearchResultScreen;

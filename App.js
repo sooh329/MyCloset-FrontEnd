@@ -1,6 +1,7 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createStackNavigator } from '@react-navigation/stack';
 import { WithLocalSvg } from 'react-native-svg/css';
 import HomeIcon from './assets/navigationIcon/Main.svg';
 import HomeIconActivated from './assets/navigationIcon/MainActivated.svg';
@@ -11,10 +12,21 @@ import ClosetIconActivated from './assets/navigationIcon/ClosetActivated.svg';
 import MainScreen from './screens/MainScreen';
 import SearchScreen from './screens/SearchScreen';
 import ClosetScreen from './screens/ClosetScreen';
+import SearchResultScreen from './screens/SearchResultScreen';
 
 
 const App = () => {
   const Tab = createBottomTabNavigator();
+  const Stack = createStackNavigator();
+
+  const SearchStack = () => {
+    return (
+      <Stack.Navigator>
+        <Stack.Screen name="SearchScreen" component={SearchScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="SearchResultScreen" component={SearchResultScreen} options={{ headerShown: false }} />
+      </Stack.Navigator>
+    );
+  };
 
   return (
     <NavigationContainer>
@@ -56,7 +68,7 @@ const App = () => {
           },
         })}>
         <Tab.Screen name="Main" component={MainScreen} options={{ headerShown: false }} />
-        <Tab.Screen name="Search" component={SearchScreen} options={{ headerShown: false }} />
+        <Tab.Screen name="Search" component={SearchStack} options={{ headerShown: false }} />
         <Tab.Screen name="Closet" component={ClosetScreen} options={{ headerShown: false }} />
       </Tab.Navigator>
     </NavigationContainer>
