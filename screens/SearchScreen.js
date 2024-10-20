@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, TouchableOpacity, TextInput, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, TextInput, ScrollView, Alert } from 'react-native';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useEffect, useState } from 'react';
@@ -21,11 +21,7 @@ export default function App() {
 
   const loadSearchText = async() => {
     const s = await AsyncStorage.getItem(STORAGE_KEY);
-    if (s !== null) {
-      setSearch(JSON.parse(s));
-    } else {
-      setSearch({}); // null일 경우 기본적으로 빈 객체를 설정
-    }
+    await setSearch(JSON.parse(s));
   }
 
   useEffect(()=>{
@@ -42,10 +38,23 @@ export default function App() {
     await saveSearchText(newSearchText);
   }
   
-  //const deleteSearchText = (key) => {
-    //
-  //}
-
+  
+  const deleteSearchText = async(key) => {
+    Alert.alert("Delete this SearchText","Are you sure?",[
+      {text:"Cancel"},
+      {
+        text:"I'm sure",
+        style:"destructive",
+        onPress:()=>{
+          const newSearchText = {...search};
+          delete newSearchText[key];
+          setSearch(newSearchText);
+          saveSearchText(newSearchText);
+        }
+      }
+    ])
+  }
+  
   return (
     <View style={styles.container}>
       <View style={styles.container1}>
@@ -140,7 +149,7 @@ export default function App() {
 
         <ScrollView style={styles.container3} horizontal showsHorizontalScrollIndicator={false}>{
           Object.keys(search).map(key=><View key={key}>
-            <TouchableOpacity>
+            <TouchableOpacity onLongPress={() => deleteSearchText(key)}>
             <Text style={styles.shopText}>{search[key].text}</Text>
             </TouchableOpacity>
           </View>)
