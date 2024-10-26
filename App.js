@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -13,6 +13,7 @@ import MainScreen from './screens/MainScreen';
 import SearchScreen from './screens/SearchScreen';
 import ClosetScreen from './screens/ClosetScreen';
 import SearchResultScreen from './screens/SearchResultScreen';
+import LoadingScreen from './screens/LoadingScreen';
 
 
 const App = () => {
@@ -27,6 +28,20 @@ const App = () => {
       </Stack.Navigator>
     );
   };
+
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // 3초 후 로딩 완료
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 4500);
+  }, []);
+
+  if (isLoading) {
+    return <LoadingScreen />; // 로딩 중일 때
+  }
+
 
   return (
     <NavigationContainer>
