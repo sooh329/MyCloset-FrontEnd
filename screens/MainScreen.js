@@ -15,14 +15,14 @@ const MainScreen = () => {
 
   //상품 목록 추후 백에서 get
   const [goods, setGoods] = useState([
-    { name: '여성 스커트 1', tags: '하의', image: require('../assets/favicon.png'), shop: 'ABLY', price: '35000', isCloset: false },
-    { name: '여성 셔츠 1', tags: '상의', image: require('../assets/dddfffsfiojdsiofjdis.png'), shop: 'ZIGZAG', price: '35000', isCloset: false },
+    { name: '여성 스커트 1', tags: '하의', image: require('../assets/favicon.png'), shop: '에이블리', price: '35000', isCloset: false },
+    { name: '여성 셔츠 1', tags: '상의', image: require('../assets/dddfffsfiojdsiofjdis.png'), shop: '지그재그', price: '35000', isCloset: false },
     { name: '여성 바지 1', tags: '하의', image: require('../assets/favicon.png'), shop: '무신사', price: '35000', isCloset: true },
-    { name: '여성 스커트 2', tags: '하의', image: require('../assets/favicon.png'), shop: 'ABLY', price: '35000', isCloset: false },
-    { name: '여성 반팔 1', tags: '상의', image: require('../assets/dddfffsfiojdsiofjdis.png'), shop: 'ABLY', price: '35000', isCloset: true },
-    { name: '여성 가디건 1', tags: '상의', image: require('../assets/dddfffsfiojdsiofjdis.png'), shop: 'ZIGZAG', price: '35000', isCloset: true },
-    { name: '여성 바지 2', tags: '하의', image: require('../assets/favicon.png'), shop: 'SHEIN', price: '35000', isCloset: false },
-    { name: '여성 바지 3', tags: '하의', image: require('../assets/favicon.png'), shop: 'SHEIN', price: '35000', isCloset: false },
+    { name: '여성 스커트 2', tags: '하의', image: require('../assets/favicon.png'), shop: '에이블리', price: '35000', isCloset: false },
+    { name: '여성 반팔 1', tags: '상의', image: require('../assets/dddfffsfiojdsiofjdis.png'), shop: '에이블리', price: '35000', isCloset: true },
+    { name: '여성 가디건 1', tags: '상의', image: require('../assets/dddfffsfiojdsiofjdis.png'), shop: '지그재그', price: '35000', isCloset: true },
+    { name: '여성 바지 2', tags: '하의', image: require('../assets/favicon.png'), shop: '무신사', price: '35000', isCloset: false },
+    { name: '여성 바지 3', tags: '하의', image: require('../assets/favicon.png'), shop: '무신사', price: '35000', isCloset: false },
   ]);
 
   const [fontsLoaded, setFontsLoaded] = useState(false);
@@ -67,7 +67,7 @@ const MainScreen = () => {
               <Text>나의 옷장 아이템 검색하기</Text>
             </TouchableOpacity>
           </View>
-          <TouchableOpacity onPress={() => navigation.navigate('Search', { screen: 'SearchResultScreen' })}>
+          <TouchableOpacity>
             <WithLocalSvg asset={MyPage} width={40} height={40} />
           </TouchableOpacity>
         </View>
