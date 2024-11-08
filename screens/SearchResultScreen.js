@@ -13,16 +13,18 @@ const SearchResultScreen = ({ route, navigation }) => {
   const [fontsLoaded, setFontsLoaded] = useState(false);
   const [filteredGoods, setFilteredGoods] = useState([]);
 
-  const goods = [
-    { name: '여성 스커트 1', tags: '하의', image: require('../assets/favicon.png'), shop: '에이블리', price: '35000', isCloset: false },
-    { name: '여성 셔츠 1', tags: '상의', image: require('../assets/dddfffsfiojdsiofjdis.png'), shop: '지그재그', price: '35000', isCloset: false },
-    { name: '여성 바지 1', tags: '하의', image: require('../assets/favicon.png'), shop: '무신사', price: '35000', isCloset: true },
-    { name: '여성 스커트 2', tags: '하의', image: require('../assets/favicon.png'), shop: '에이블리', price: '35000', isCloset: false },
-    { name: '여성 반팔 1', tags: '상의', image: require('../assets/dddfffsfiojdsiofjdis.png'), shop: '에이블리', price: '35000', isCloset: true },
-    { name: '여성 가디건 1', tags: '상의', image: require('../assets/dddfffsfiojdsiofjdis.png'), shop: '지그재그', price: '35000', isCloset: true },
-    { name: '여성 바지 2', tags: '하의', image: require('../assets/favicon.png'), shop: '무신사', price: '35000', isCloset: false },
-    { name: '여성 바지 3', tags: '하의', image: require('../assets/favicon.png'), shop: '무신사', price: '35000', isCloset: false },
-  ];
+  const [goods, setGoods] = useState([
+    { name: '미니멀 리브드 어반 스타일 골지 투웨이 크롭자켓 더블 지퍼', tags: '상의', image: require('../assets/sweathiver.png'), supplier: '하이버', price: '49800', isCloset: '클로젯1', link:'https://www.hiver.co.kr/products/158470990' },
+    { name: '힙덮는 오버핏, 프린팅 박시 긴팔티셔츠 (4color)', tags: '상의', image: require('../assets/shirtably.png'), supplier: '에이블리', price: '15500', isCloset: '클로젯1', link:'https://m.a-bly.com/goods/14112963' },
+    { name: '자수포인트 오버핏 소매 트랙 기모 후드 [빅사이즈/통통제작]', tags: '상의', image: require('../assets/hoodieably.png'), supplier: '에이블리', price: '20800', isCloset: '클로젯1', link:'https://m.a-bly.com/goods/29173579' },
+    { name: '[핏보장] 아센 비조 사이드 스냅 롱 와이드 팬츠 (5color)', tags: '하의', image: require('../assets/pantsably.png'), supplier: '에이블리', price: '15200', isCloset: '클로젯1', link:'https://m.a-bly.com/goods/32460358' },
+    { name: '[남여공용] 이지핏 와이드 트레이닝 바지 무지 허리밴딩 쭈리 팬츠', tags: '하의', image: require('../assets/pantszig.png'), supplier: '지그재그', price: '9900', isCloset: '클로젯1', link:'https://zigzag.kr/catalog/products/147796894' },
+    { name: '브러쉬 워싱 세미와이드 데님팬츠 2컬러', tags: '하의', image: require('../assets/pantshiver.png'), supplier: '하이버', price: '32900', isCloset: '클로젯2', link:'https://www.hiver.co.kr/products/159620864' },
+    { name: '슬레이크 후드 올리브 HHHD3397', tags: '상의', image: require('../assets/hoodie2.png'), supplier: '무신사', price: '42900', isCloset: '클로젯2', link:'https://www.musinsa.com/products/2106705' },
+    { name: '캘리 스톤 피그먼트 워싱팬츠 4종 브라운 ISLP6225', tags: '하의', image: require('../assets/pants.png'), supplier: '무신사', price: '49800', isCloset: '가을&겨울', link:'https://www.musinsa.com/products/3617168' },
+    { name: '체크 울캐시미어 머플러 - 3color', tags: '악세서리', image: require('../assets/muffler.png'), supplier: '무신사', price: '79500', isCloset: '가을&겨울', link:'https://www.musinsa.com/products/3605632' },
+    { name: 'Focus 피그먼트 후드티', tags: '상의', image: require('../assets/hoodie.png'), supplier: '무신사', price: '48200', isCloset: '가을&겨울', link:'https://www.musinsa.com/products/4439440' },
+  ]);
 
   useEffect(() => {
     const loadFonts = async () => {
@@ -46,27 +48,27 @@ const SearchResultScreen = ({ route, navigation }) => {
       (item) =>
         item.name.includes(searchWord) ||
         item.tags.includes(searchWord) ||
-        item.shop.includes(searchWord)
+        item.supplier.includes(searchWord)
     );
     setFilteredGoods(filtered);
   }, [searchWord]);
 
-  const handleCloset = (index) => {
-    setFilteredGoods((prevGoods) => {
-      const newGoods = [...prevGoods];
-      newGoods[index].isCloset = !newGoods[index].isCloset;
+  // const handleCloset = (index) => {
+  //   setFilteredGoods((prevGoods) => {
+  //     const newGoods = [...prevGoods];
+  //     newGoods[index].isCloset = !newGoods[index].isCloset;
 
-      const message = newGoods[index].isCloset
-        ? '클로젯에 담겼습니다.'
-        : '클로젯에서 삭제되었습니다.';
-      Toast.show(message, {
-        duration: Toast.durations.SHORT,
-        position: Toast.positions.BOTTOM,
-      });
+  //     const message = newGoods[index].isCloset
+  //       ? '클로젯에 담겼습니다.'
+  //       : '클로젯에서 삭제되었습니다.';
+  //     Toast.show(message, {
+  //       duration: Toast.durations.SHORT,
+  //       position: Toast.positions.BOTTOM,
+  //     });
 
-      return newGoods;
-    });
-  };
+  //     return newGoods;
+  //   });
+  // };
 
   if (!fontsLoaded) {
     return null;
@@ -100,7 +102,7 @@ const SearchResultScreen = ({ route, navigation }) => {
                   <View style={{ width: '90%' }}>
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 3 }}>
                       <Text style={styles.itemPrice}>{item.price}원</Text>
-                      <Text style={styles.itemShop}>{item.shop}</Text>
+                      <Text style={styles.itemShop}>{item.supplier}</Text>
                     </View>
                     <Text style={styles.itemName} numberOfLines={1} ellipsizeMode="tail">
                       {item.name}

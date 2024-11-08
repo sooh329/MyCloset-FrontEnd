@@ -23,7 +23,7 @@ export default function SearchScreen({ navigation }) {
 
   const loadSearchText = async() => {
     const s = await AsyncStorage.getItem(STORAGE_KEY);
-    await setSearch(JSON.parse(s));
+    setSearch(JSON.parse(s));
   }
 
   useEffect(() => {
@@ -41,27 +41,28 @@ export default function SearchScreen({ navigation }) {
     if (!searchWord.trim()) {
       alert("검색어를 입력해주세요!");
       return;
-    } // 빈 문자열은 저장하지 않음
+    }
 
-    const newSearchText = { ...search };
+    // 최근 검색어 설정
+    const newSearchText = { ...search }; //기존 최근검색어 배열 복사
+    // 중복 검색어가 있는지 확인하고, 있는 경우 기존 검색어 삭제
     const existingKey = Object.keys(search).find(key => search[key].text === searchWord);
     if (existingKey) delete newSearchText[existingKey];
-
-    newSearchText[Date.now()] = { text: searchWord };
+    newSearchText[Date.now()] = { text: searchWord }; //현재 검색한 새로운 단어를 저장
     setSearch(newSearchText);
-    await saveSearchText(newSearchText);
-    setText(""); // 검색 후 입력 텍스트 초기화
+    await saveSearchText(newSearchText); // AsyncStorage에 수정된 검색어 배열 저장
+    setText(""); // 검색 후 입력창 텍스트 초기화
 
     // 검색 결과 페이지로 이동
-    navigation.navigate('SearchResultScreen', { searchWord });
+    navigation.navigate('SearchResultScreen', { searchWord }); 
   };
   
   
   const deleteSearchText = async(key) => {
-    Alert.alert("Delete this SearchText","Are you sure?",[
-      {text:"Cancel"},
+    Alert.alert("최근 검색어 삭제", "삭제하시겠습니까?",[
+      {text:"취소"},
       {
-        text:"I'm sure",
+        text:"삭제",
         style:"destructive",
         onPress:()=>{
           const newSearchText = {...search};
@@ -105,7 +106,7 @@ export default function SearchScreen({ navigation }) {
           </TouchableOpacity>
 
           <TouchableOpacity>
-            <Text style={styles.shopText} onPress={() => handleSearch('#캘빈클라인')}>#캘빈클라인</Text>
+            <Text style={styles.shopText} onPress={() => handleSearch('#목도리')}>#목도리</Text>
           </TouchableOpacity>
 
           <TouchableOpacity>
